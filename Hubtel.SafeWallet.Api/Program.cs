@@ -69,6 +69,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next(context);
+    }
+    catch (CustomHttpException ex)
+    {
+        context.Response.StatusCode = ex.StatusCode;
+        await context.Response.WriteAsync(ex.CustomMessage);
+    }
+});
 
 app.UseHttpsRedirection();
 

@@ -16,6 +16,8 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
         Task<Wallet> GetWalletByWalletId(int walletId);
         Task<IEnumerable<Wallet>> ListWallets();
         Task RemoveWallet(int walletId);
+        Task<bool> CheckExistingUserWallet(string accountNumber, string phonenumber);
+        Task<int> GetUserWalletCount(string phoneNumber);
     }
     internal class WalletRepository : DbRepository, IWalletRepository
     {
@@ -29,14 +31,16 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
             using (var connection = await GetConnection())
             {
                 var query = @"
-                     INSERT INTO public.wallet(name, account_name, account_number)
-                        VALUES(@Name, @AccountName, @AccountNumber)
+                     INSERT INTO public.wallet(name, account_name, account_number, type, owner, created_at)
+                        VALUES(@Name, @AccountName, @AccountNumber, @Type, @Owner, NOW())
                     ";
                 await connection.ExecuteScalarAsync(query, new
                 {
-                    Name = wallet.Name,
-                    AccountName = wallet.Name,
-                    AccountNumber = wallet.AccountNumber.Substring(0, 6)
+                    Name = wallet.Name.Trim(),
+                    AccountScheme = wallet.AccountScheme.Trim(),
+                    AccountNumber = wallet.AccountNumber.Trim().Substring(0, 6),
+                    Type = wallet.Type.Trim(),
+                    Owner = wallet.Owner.Trim(),
                 });
 
             }
@@ -85,7 +89,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
             }
         }
 
-        public async Task<bool> CheckExistingUserWallet(string accountNumber)
+        public async Task<bool> CheckExistingUserWallet(string accountNumber, string phonenumber)
         {
             using (var connection = await GetConnection())
             {
@@ -93,25 +97,31 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
                     SELECT EXISTS(
                         SELECT * FROM public.wallet
                         WHERE account_number = @AccountNumber
+                        AND owner = @PhoneNumber
                     )
                 ";
                 return await connection.ExecuteScalarAsync<bool>(query, new
                 {
-                    AccountNumber = accountNumber
+                    AccountNumber = accountNumber,
+                    PhoneNumber = phonenumber
                 });
 
             }
         }
 
-        public async Task<IEnumerable<Wallet>> GetUserWalletCount(string phoneNumber)
+        public async Task<int> GetUserWalletCount(string phoneNumber)
         {
             using (var connection = await GetConnection())
             {
                 var query = @"
-                    SELECT 1 FROM public.wallet
+                    SELECT count(1) FROM public.wallet
                     WHERE owner = @PhoneNumber
                 ";
-                return await connection.QueryAsync<Wallet>(query);
+                return await connection.ExecuteScalarAsync<int>(query, new
+                {
+                    PhoneNumber = phoneNumber
+                });
+
             }
         }
     }
