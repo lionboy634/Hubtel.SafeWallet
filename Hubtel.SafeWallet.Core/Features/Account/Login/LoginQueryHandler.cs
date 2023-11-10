@@ -1,4 +1,5 @@
-﻿using Hubtel.SafeWallet.Core.Services;
+﻿using Hubtel.SafeWallet.Core.Domain.Model;
+using Hubtel.SafeWallet.Core.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Hubtel.SafeWallet.Core.Features.Account.Login
             var userAuthenticated = await _authenticator.ValidateUser(email, password);
             if (!userAuthenticated)
             {
-                
+                throw new CustomHttpException("User Does Not Exist", 400, "User Does Not Exist");
             }
             string token = await _authenticator.GenerateToken();
             return token;

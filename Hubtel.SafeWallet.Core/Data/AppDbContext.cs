@@ -29,5 +29,7 @@ namespace Hubtel.SafeWallet.Core.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
         }
+
+        public DbSet<Wallet> Wallet { get; set; }
     }
 }
