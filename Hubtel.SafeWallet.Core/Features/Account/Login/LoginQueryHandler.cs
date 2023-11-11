@@ -24,7 +24,7 @@ namespace Hubtel.SafeWallet.Core.Features.Account.Login
             var userAuthenticated = await _authenticator.ValidateUser(email, password);
             if (!userAuthenticated)
             {
-                throw new CustomHttpException("User Does Not Exist", 400, "User Does Not Exist");
+                throw new CustomHttpException("User Does Not Exist", 400);
             }
             string token = await _authenticator.GenerateToken();
             return token;

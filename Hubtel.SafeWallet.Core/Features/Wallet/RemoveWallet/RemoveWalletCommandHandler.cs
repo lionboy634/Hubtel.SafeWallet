@@ -25,7 +25,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
             if(wallet == null)
             {
                 _logger.LogError($"Failed To Find Wallet [{request.walletId}]");
-                throw new CustomHttpException("Wallet Not Found", 404, "Wallet Not Found");
+                throw new CustomHttpException("Wallet Not Found", 404);
             }
             await _walletRepository.RemoveWallet(request.walletId);
         }

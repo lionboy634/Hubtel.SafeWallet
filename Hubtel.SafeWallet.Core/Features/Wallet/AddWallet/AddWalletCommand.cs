@@ -15,6 +15,14 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
         public string AccountNumber { get; set; }
         public string Type { get; set; }
         public string Owner { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+
+        public AddWalletCommand(string name, string accountName, string accountNumber, string type, string owner)
+        {
+            Name = name;
+            AccountName = accountName;
+            AccountNumber = accountNumber;
+            Type = type;
+            Owner = owner;
+        }
     }
 }

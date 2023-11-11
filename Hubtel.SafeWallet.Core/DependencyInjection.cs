@@ -12,7 +12,7 @@ namespace Hubtel.SafeWallet.Core
     {
         public static IServiceCollection RegisterCoreDIServices(this IServiceCollection services)
         {
-            //services.AddMediatR(typeof(MediatRModule).Assembly);
+            
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);

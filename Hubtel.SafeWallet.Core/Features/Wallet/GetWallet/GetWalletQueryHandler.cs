@@ -21,7 +21,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.GetWallet
             var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
             if(wallet == null)
             {
-                throw new CustomHttpException("Wallet Not Found", 404, "Wallet Not Found");
+                throw new CustomHttpException("Wallet Not Found", 404);
             }
             return wallet;
         }

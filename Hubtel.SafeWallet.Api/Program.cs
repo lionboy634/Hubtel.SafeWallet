@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<ConnectionStringOption>(builder.Configuration.GetSection("SafeWallet"));
+
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(opt => {
 });
 
 builder.Services.RegisterCoreDIServices();
-
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 var app = builder.Build();
 
 
