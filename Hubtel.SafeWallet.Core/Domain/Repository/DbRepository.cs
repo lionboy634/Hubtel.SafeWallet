@@ -1,4 +1,5 @@
 ﻿using Hubtel.SafeWallet.Core.Domain.Model;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using System;
@@ -11,15 +12,17 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
 {
     public class DbRepository
     {
-        private ConnectionStringOption _connectionString;
-        public DbRepository(IOptions<ConnectionStringOption> connectionString)
+        private readonly IConfiguration _configuration;
+        public DbRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString.Value ?? throw new ArgumentNullException(nameof(connectionString));
+            _configuration = configuration;
         }
 
         public async Task<NpgsqlConnection> GetConnection()
         {
-            var connection = new NpgsqlConnection(_connectionString.SafeWallet);
+            var connectionString = _configuration.GetConnectionString("SafeWallet");
+
+            var connection = new NpgsqlConnection(connectionString);
             await connection.OpenAsync();
             return connection;
         }

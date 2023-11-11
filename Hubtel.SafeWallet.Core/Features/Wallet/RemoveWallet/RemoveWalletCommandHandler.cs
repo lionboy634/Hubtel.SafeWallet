@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
 {
-    public class RemoveWalletCommandHandler : IRequestHandler<RemoveWalletCommand>
+    public class RemoveWalletCommandHandler : IRequestHandler<RemoveWalletCommand, Unit>
     {
         private readonly IWalletRepository _walletRepository;
         private readonly ILogger<RemoveWalletCommandHandler> _logger;
@@ -19,15 +19,16 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
             _walletRepository = walletRepository;
             _logger = logger;
         }
-        public async Task Handle(RemoveWalletCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RemoveWalletCommand request, CancellationToken cancellationToken)
         {
             var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
             if(wallet == null)
             {
                 _logger.LogError($"Failed To Find Wallet [{request.walletId}]");
-                throw new CustomHttpException("Wallet Not Found", 404, "Wallet Not Found");
+                throw new CustomHttpException("Wallet Not Found", 404);
             }
             await _walletRepository.RemoveWallet(request.walletId);
+            return Unit.Value;
         }
     }
 }

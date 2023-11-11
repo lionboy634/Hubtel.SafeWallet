@@ -11,8 +11,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Model
         public int StatusCode { get; }
         public string CustomMessage { get; }
 
-        public CustomHttpException(string message, int statusCode, string customMessage)
-            : base(message)
+        public CustomHttpException(string customMessage, int statusCode) : base(customMessage)
         {
             StatusCode = statusCode;
             CustomMessage = customMessage;

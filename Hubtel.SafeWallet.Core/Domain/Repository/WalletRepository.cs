@@ -21,7 +21,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
     }
     internal class WalletRepository : DbRepository, IWalletRepository
     {
-        public WalletRepository(IOptions<ConnectionStringOption> connectionString) : base(connectionString)
+        public WalletRepository(IConfiguration configuration) : base(configuration)
         {
 
         }
@@ -31,8 +31,8 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
             using (var connection = await GetConnection())
             {
                 var query = @"
-                     INSERT INTO public.wallet(name, account_name, account_number, type, owner, created_at)
-                        VALUES(@Name, @AccountName, @AccountNumber, @Type, @Owner, NOW())
+                     INSERT INTO public.wallet(name, account_scheme, account_number, type, owner, created_at)
+                        VALUES(@Name, @AccountScheme, @AccountNumber, @Type, @Owner, NOW())
                     ";
                 await connection.ExecuteScalarAsync(query, new
                 {

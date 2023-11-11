@@ -37,7 +37,8 @@ namespace Hubtel.SafeWallet.Core.Services
 
         public async Task<string> GenerateToken()
         {
-            var key = Encoding.UTF8.GetBytes("djdjks-djk2393-djksd-338932jds-vbkwjje-39393");
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = Encoding.UTF8.GetBytes(jwtSettings.GetSection("secret").Value);
             var secret = new SymmetricSecurityKey(key);
             var signingCredentials = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
             var claims = await ListClaims();

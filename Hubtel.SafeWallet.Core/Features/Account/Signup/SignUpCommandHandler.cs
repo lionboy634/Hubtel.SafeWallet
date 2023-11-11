@@ -20,16 +20,16 @@ namespace Hubtel.SafeWallet.Core.Features.Account.Signup
         {
             var user = new WalletOwner()
             {
-                Email = "rex@gmail.com",
-                PhoneNumber = "0244649655",
-                UserName = "rex@gmail.com",
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                UserName = request.Email,
             };
             var result = await _identityService.CreateUserAsync(user);
             if (result.Succeeded)
             {
                 await _identityService.AddUserRole(user, "Member");
             }
-            
+ 
         }
     }
 }

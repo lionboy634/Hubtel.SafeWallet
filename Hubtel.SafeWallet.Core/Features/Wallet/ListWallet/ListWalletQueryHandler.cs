@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Hubtel.SafeWallet.Core.Domain.Repository;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,14 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.ListWallet
 {
     public class ListWalletQueryHandler : IRequestHandler<ListWalletQuery, IEnumerable<Domain.Model.Wallet>>
     {
-        public ListWalletQueryHandler()
+        private readonly IWalletRepository _walletRepository;
+        public ListWalletQueryHandler(IWalletRepository walletRepository)
         {
-
+            _walletRepository = walletRepository;
         }
         public async Task<IEnumerable<Domain.Model.Wallet>> Handle(ListWalletQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _walletRepository.ListWallets();
         }
     }
 }
