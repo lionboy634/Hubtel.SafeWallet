@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
 {
-    public class AddWalletCommand : IRequest
+    public class AddWalletCommand : IRequest<Unit>
     {
         public int Id { get; set; }
         public string Name { get; set; }

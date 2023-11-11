@@ -19,10 +19,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.GetWallet
         public async  Task<Domain.Model.Wallet> Handle(GetWalletQuery request, CancellationToken cancellationToken)
         {
             var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
-            if(wallet == null)
-            {
-                throw new CustomHttpException("Wallet Not Found", 404);
-            }
+
             return wallet;
         }
     }

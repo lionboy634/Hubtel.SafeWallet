@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
 {
-    public class RemoveWalletCommand : IRequest
+    public class RemoveWalletCommand : IRequest<Unit>
     {
        public int walletId { get; set; }
     }

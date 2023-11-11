@@ -27,7 +27,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
         public async Task<IActionResult> ListWallet(int limit=0, int offset=0)
         {
             var command = new ListWalletQuery(limit);
-            var result = _mediator.Send(command);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
 
@@ -43,7 +43,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
         public async Task<IActionResult> AddWallet([FromForm] string accountNumber, [FromForm] string accountScheme, [FromForm] string type)
         {
             var user = await _identityService.GetUserByEmail(User.FindFirst(ClaimTypes.Name)?.Value);
-            var command = new AddWalletCommand(user.UserName, accountNumber, accountScheme, type, user.PhoneNumber);
+            var command = new AddWalletCommand(user.UserName, accountScheme, accountNumber, type, user.PhoneNumber);
             await _mediator.Send(command);
             return Ok();
         }

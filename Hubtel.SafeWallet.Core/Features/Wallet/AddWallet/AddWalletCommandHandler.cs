@@ -1,4 +1,5 @@
-﻿using Hubtel.SafeWallet.Core.Domain.Model;
+﻿using FluentValidation;
+using Hubtel.SafeWallet.Core.Domain.Model;
 using Hubtel.SafeWallet.Core.Domain.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,55 +11,49 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
 {
-    public class AddWalletCommandHandler : IRequestHandler<AddWalletCommand>
+    public class AddWalletCommandHandler : IRequestHandler<AddWalletCommand, Unit>
     {
         private readonly IWalletRepository _walletRepository;
         private readonly ILogger<AddWalletCommandHandler> _logger;
-        public AddWalletCommandHandler(IWalletRepository walletRepository, ILogger<AddWalletCommandHandler> logger)
+        private readonly IValidator<AddWalletCommand> _validator;
+        public AddWalletCommandHandler(
+            IWalletRepository walletRepository,
+            ILogger<AddWalletCommandHandler> logger,
+            IValidator<AddWalletCommand> validator)
         {
             _walletRepository = walletRepository;
             _logger = logger;
+            _validator = validator;
         }
-        public async  Task Handle(AddWalletCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddWalletCommand request, CancellationToken cancellationToken)
         {
-            try
+            var existingWallet = await _walletRepository.CheckExistingUserWallet(request.AccountNumber, request.Owner);
+            if (existingWallet)
             {
-                var existingWallet = await _walletRepository.CheckExistingUserWallet(request.AccountName, request.Owner);
-                if (existingWallet)
-                {
-                    throw new CustomHttpException("Wallet Not Found", 404);
-                }
-                var walletCount = await _walletRepository.GetUserWalletCount(request.Owner);
-                if (walletCount <= 5)
-                {
+                throw new CustomHttpException("Wallet Not Found", 404);
+            }
+            var walletCount = await _walletRepository.GetUserWalletCount(request.Owner);
+            if (walletCount >= 0 && walletCount <= 5)
+            {
 
-                    await _walletRepository.AddWallet(new Domain.Model.Wallet()
-                    {
-                        AccountNumber = request.AccountNumber,
-                        AccountScheme = request.AccountName,
-                        Owner = request.Owner,
-                        Name = request.Name,
-                        CreatedAt = DateTimeOffset.UtcNow,
-                        Type = request.Type,
-                    });
-                }
-                else
+                await _walletRepository.AddWallet(new Domain.Model.Wallet()
                 {
-                    throw new CustomHttpException("User Cannot Have More Than 5 Wallets", 400);
-                }
+                    AccountNumber = request.AccountNumber,
+                    AccountScheme = request.AccountName,
+                    Owner = request.Owner,
+                    Name = request.Name,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    Type = request.Type,
+                });
             }
-            catch(CustomHttpException ex)
+            else
             {
-                _logger.LogError($"Error: {ex.CustomMessage}");
-                throw;
+                throw new CustomHttpException("User Cannot Have More Than 5 Wallets", 400);
             }
-            catch(Exception ex)
-            {
-                _logger.LogError($"Error: {ex}");
-                throw;
-            }
-           
+
+        return Unit.Value;
 
         }
+           
     }
 }

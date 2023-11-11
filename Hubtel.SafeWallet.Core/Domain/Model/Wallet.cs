@@ -12,6 +12,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Model
     public class Wallet
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public int Id { get; set; }
         [Column("name")]
@@ -24,6 +25,8 @@ namespace Hubtel.SafeWallet.Core.Domain.Model
         public string Type { get; set; }
         [Column("owner")]
         public string Owner { get; set; }
+        [Column("hashed_account_no")]
+        public string HashedAccountNumber { get; set; }
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; }
     }
