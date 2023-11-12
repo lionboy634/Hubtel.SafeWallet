@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
 {
-    public class AddWalletCommand : IRequest<Unit>
+    public class AddWalletCommand : IRequest<Result>
     {
         public int Id { get; set; }
         public string Name { get; set; }

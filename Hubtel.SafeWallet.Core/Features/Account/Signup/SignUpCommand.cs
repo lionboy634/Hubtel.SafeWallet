@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Account.Signup
 {
-    public class SignUpCommand : IRequest
+    public class SignUpCommand : IRequest<Result>
     {
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

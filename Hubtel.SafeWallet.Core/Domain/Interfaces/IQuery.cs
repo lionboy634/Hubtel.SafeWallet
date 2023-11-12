@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Domain.Interfaces
 {
-    public interface IQuery<out TResponse> : IRequest<TResponse>
+    public interface IQuery<TResponse> : IRequest<Result<TResponse>>
     {
 
     }

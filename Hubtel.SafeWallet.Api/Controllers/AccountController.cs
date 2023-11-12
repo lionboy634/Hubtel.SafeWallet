@@ -21,15 +21,15 @@ namespace Hubtel.SafeWallet.Api.Controllers
         {
             var command = new LoginQuery(email, password);
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return result.IsSuccess ?  Ok(result.Value) : BadRequest(result.Errors[0]);
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> SignUp(string email, string phoneNumber, string password)
+        public async Task<IActionResult> SignUp([FromForm]string email, [FromForm]string phoneNumber, [FromForm] string password)
         {
             var command = new SignUpCommand(email, phoneNumber, password);
-            await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? Ok() : BadRequest(result.Errors[0]);
         }
     }
 }

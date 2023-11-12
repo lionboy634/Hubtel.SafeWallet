@@ -12,7 +12,6 @@ namespace Hubtel.SafeWallet.Core.Domain.Model
     public class Wallet
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public int Id { get; set; }
         [Column("name")]

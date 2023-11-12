@@ -28,6 +28,9 @@ namespace Hubtel.SafeWallet.Core.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.Entity<Wallet>()
+                .Property(w => w.Id)
+                .UseIdentityColumn();
         }
 
         public DbSet<Wallet> Wallet { get; set; }
