@@ -1,4 +1,5 @@
-﻿using Hubtel.SafeWallet.Core.Domain.Model;
+﻿using FluentResults;
+using Hubtel.SafeWallet.Core.Domain.Model;
 using Hubtel.SafeWallet.Core.Domain.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
 {
-    public class RemoveWalletCommandHandler : IRequestHandler<RemoveWalletCommand, Unit>
+    public class RemoveWalletCommandHandler : IRequestHandler<RemoveWalletCommand, Result>
     {
         private readonly IWalletRepository _walletRepository;
         private readonly ILogger<RemoveWalletCommandHandler> _logger;
@@ -19,16 +20,18 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
             _walletRepository = walletRepository;
             _logger = logger;
         }
-        public async Task<Unit> Handle(RemoveWalletCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RemoveWalletCommand request, CancellationToken cancellationToken)
         {
             var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
             if(wallet == null)
             {
-                _logger.LogError($"Failed To Find Wallet [{request.walletId}]");
-                throw new CustomHttpException("Wallet Not Found", 404);
+                string message = $"Failed To Find Wallet [{request.walletId}]";
+                _logger.LogError(message);
+                return Result.Fail(message).WithError(new Error(message));
             }
             await _walletRepository.RemoveWallet(request.walletId);
-            return Unit.Value;
+
+            return Result.Ok().WithSuccess("Wallet Removed Successfully");
         }
     }
 }

@@ -18,7 +18,11 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
             RuleFor(command => command.Type)
             .Must(type => type != null && type?.ToLower() == "momo" || type?.ToLower() == "card")
             .WithMessage("Type Should Contain Momo Or Card");
+            RuleFor(request => request.Owner)
+            .NotEmpty().WithMessage("Phone number is required.")
+            .Matches(@"^(0|\+233)[2-5]\d{8}$").WithMessage("Invalid phone number format."); 
         }
-        
     }
+        
 }
+

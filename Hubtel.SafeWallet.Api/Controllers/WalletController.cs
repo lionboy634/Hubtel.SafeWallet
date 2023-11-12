@@ -24,11 +24,11 @@ namespace Hubtel.SafeWallet.Api.Controllers
             _identityService = identityService;
         }
         [HttpGet]
-        public async Task<IActionResult> ListWallet(int limit=0, int offset=0)
+        public async Task<IActionResult> ListWallet(int limit)
         {
             var command = new ListWalletQuery(limit);
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         [HttpGet("{walletId}")]
@@ -36,7 +36,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
         {
             var command = new GetWalletQuery() { walletId = walletId };
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors[0]);
         }
 
         [HttpPost]
@@ -44,16 +44,16 @@ namespace Hubtel.SafeWallet.Api.Controllers
         {
             var user = await _identityService.GetUserByEmail(User.FindFirst(ClaimTypes.Name)?.Value);
             var command = new AddWalletCommand(user.UserName, accountScheme, accountNumber, type, user.PhoneNumber);
-            await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpDelete("{walletId}")]
         public async Task<IActionResult> RemoveWallet([FromRoute] int walletId)
         {
             var command = new RemoveWalletCommand() { walletId = walletId};
-            await _mediator.Send(command);
-            return NoContent();
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? NoContent() : BadRequest(result);
         }
     }
 }

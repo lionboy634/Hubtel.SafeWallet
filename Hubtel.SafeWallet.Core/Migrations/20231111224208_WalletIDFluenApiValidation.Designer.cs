@@ -3,6 +3,7 @@ using System;
 using Hubtel.SafeWallet.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hubtel.SafeWallet.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231111224208_WalletIDFluenApiValidation")]
+    partial class WalletIDFluenApiValidation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,15 +164,15 @@ namespace Hubtel.SafeWallet.Core.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "158e32ed-0a10-4efe-8d48-78613fa65097",
-                            ConcurrencyStamp = "e5659734-ae53-42b5-a8d7-34000718ea1a",
+                            Id = "c1708e3c-41f3-48c0-a257-639936a6ad5a",
+                            ConcurrencyStamp = "e0f1fc71-5cfe-48a6-aa5f-6b6d9e036cab",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "4a1489ab-15c8-4170-b333-f07880518720",
-                            ConcurrencyStamp = "356da848-0241-4e9d-8d0b-e404674b8ecc",
+                            Id = "d2e983a3-8dc3-43c5-9067-e0fbc48f5f0a",
+                            ConcurrencyStamp = "23890ea9-bd6a-49ec-b1d5-ae396ba4ad41",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

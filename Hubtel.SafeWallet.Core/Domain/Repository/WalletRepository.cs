@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Hubtel.SafeWallet.Core.Data;
 using Hubtel.SafeWallet.Core.Domain.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -19,31 +20,18 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
         Task<bool> CheckExistingUserWallet(string accountNumber, string phonenumber);
         Task<int> GetUserWalletCount(string phoneNumber);
     }
-    internal class WalletRepository : DbRepository, IWalletRepository
+    public class WalletRepository : DbRepository, IWalletRepository
     {
-        public WalletRepository(IConfiguration configuration) : base(configuration)
+        private readonly AppDbContext _dbContext;
+        public WalletRepository(IConfiguration configuration, AppDbContext dbContext) : base(configuration)
         {
-
+            _dbContext = dbContext;
         }
 
         public async Task AddWallet(Wallet wallet)
         {
-            using (var connection = await GetConnection())
-            {
-                var query = @"
-                     INSERT INTO public.wallet(name, account_scheme, account_number, type, owner, created_at)
-                        VALUES(@Name, @AccountScheme, @AccountNumber, @Type, @Owner, NOW())
-                    ";
-                await connection.ExecuteScalarAsync(query, new
-                {
-                    Name = wallet.Name.Trim(),
-                    AccountScheme = wallet.AccountScheme.Trim(),
-                    AccountNumber = wallet.AccountNumber.Trim().Substring(0, 6),
-                    Type = wallet.Type.Trim(),
-                    Owner = wallet.Owner.Trim(),
-                });
-
-            }
+            await _dbContext.AddAsync(wallet);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Wallet> GetWalletByWalletId(int walletId)

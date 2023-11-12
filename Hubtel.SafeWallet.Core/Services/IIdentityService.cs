@@ -1,5 +1,6 @@
 ﻿using Hubtel.SafeWallet.Core.Domain.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Hubtel.SafeWallet.Core.Services
         Task<IdentityResult> CreateUserAsync(WalletOwner user);
         Task AddUserRole(WalletOwner user, string Role);
         Task<WalletOwner> GetUserByEmail(string email);
+        Task<bool> CheckUserByPhone(string phone);
     }
 
 
@@ -27,6 +29,17 @@ namespace Hubtel.SafeWallet.Core.Services
         public async Task AddUserRole(WalletOwner user, string role)
         {
             await _userManager.AddToRoleAsync(user, role);
+        }
+
+        public async Task<bool> CheckUserByPhone(string phone)
+        {
+            var user = await _userManager.Users.Where(c => c.PhoneNumber == phone).ToListAsync();
+            if (user.Any())
+            {
+                return true;
+            }
+            return false;
+           
         }
 
         public async Task<IdentityResult> CreateUserAsync(WalletOwner user)
