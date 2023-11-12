@@ -13,7 +13,8 @@ To install SafeWallet, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/your-username/SafeWallet.git`
 2. Navigate to the project directory: `cd SafeWallet`
-3. Run the application: `dotnet run`
+3. Run `dotnet restore`
+4. Run the application: `dotnet run`
 
 
 To use SafeWallet, follow these steps:
@@ -26,11 +27,13 @@ To use SafeWallet, follow these steps:
 ## API Endpoints
 
 The following are the main API endpoints provided by SafeWallet:
+- **POST /api/v1/account/signin:** Login into account.
+- **POST /api/v1/account/signup:** Create an account.
 
-- **POST /api/wallets:** Create a new wallet.
-- **DELETE /api/wallets/{id}:** Remove a wallet by ID.
-- **GET /api/wallets/{id}:** Retrieve details of a specific wallet.
-- **GET /api/wallets:** Retrieve a list of all wallets.
+- **POST /api/v1/wallets:** Create a new wallet.
+- **DELETE /api/v1/wallets/{id}:** Remove a wallet by ID.
+- **GET /api/v1/wallets/{id}:** Retrieve details of a specific wallet.
+- **GET /api/v1/wallets:** Retrieve a list of all wallets.
 
 
 
