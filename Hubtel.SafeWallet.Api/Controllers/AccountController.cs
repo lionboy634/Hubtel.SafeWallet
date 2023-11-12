@@ -25,9 +25,9 @@ namespace Hubtel.SafeWallet.Api.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> SignUp([FromForm]string email, [FromForm]string phoneNumber, [FromForm] string password)
+        public async Task<IActionResult> SignUp([FromForm] string firstname, [FromForm] string lastname, [FromForm] string email, [FromForm] string phonenumber, [FromForm] string password)
         {
-            var command = new SignUpCommand(email, phoneNumber, password);
+            var command = new SignUpCommand(firstname, lastname, email, phonenumber, password);
             var result = await _mediator.Send(command);
             return result.IsSuccess ? Ok() : BadRequest(result.Errors[0]);
         }

@@ -31,8 +31,7 @@ namespace Hubtel.SafeWallet.Core.Services
         public async Task<bool> ValidateUser(string email, string password)
         {
             _user = await _userManager.FindByEmailAsync(email);
-            return _user != null;
-                //&& await _userManager.CheckPasswordAsync(_user, password);
+            return _user != null && await _userManager.CheckPasswordAsync(_user, password);
         }
 
         public async Task<string> GenerateToken()

@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace Hubtel.SafeWallet.Api.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="Member")]
     [Route("api/v1/wallet")]
     public class WalletController : ControllerBase
     {
@@ -45,7 +45,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
             var user = await _identityService.GetUserByEmail(User.FindFirst(ClaimTypes.Name)?.Value);
             var command = new AddWalletCommand(user.UserName, accountScheme, accountNumber, type, user.PhoneNumber);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : BadRequest(result.Errors[0]);
+            return result.IsSuccess ? Ok() : BadRequest(result.Errors[0]);
         }
 
         [HttpDelete("{walletId}")]
