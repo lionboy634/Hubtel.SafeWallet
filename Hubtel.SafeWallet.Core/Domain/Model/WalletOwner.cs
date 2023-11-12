@@ -9,6 +9,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Model
 {
     public class WalletOwner : IdentityUser
     {
-
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

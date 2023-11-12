@@ -21,11 +21,19 @@ namespace Hubtel.SafeWallet.Core.Features.Account.Signup
         {
             var user = new WalletOwner()
             {
+                FirstName = request.FirstName,
+                LastName= request.LastName,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
                 UserName = request.Email,
             };
-            var result = await _identityService.CreateUserAsync(user);
+            //phone number must be unique
+            var userExist = await _identityService.CheckUserByEmailOrPhone(request.Email, request.PhoneNumber);
+            if(userExist)
+            {
+                return Result.Fail("User Already Exists");
+            }
+            var result = await _identityService.CreateUserAsync(user, request.Password );
             if (!result.Succeeded)
             {
                 var errorMessages = result.Errors.Select(error => error.Description);
