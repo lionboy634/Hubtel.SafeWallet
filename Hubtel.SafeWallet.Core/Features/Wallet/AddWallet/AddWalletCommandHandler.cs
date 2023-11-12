@@ -50,7 +50,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
                 await _walletRepository.AddWallet(new Domain.Model.Wallet()
                 {
                     AccountNumber = accountNumber,
-                    AccountScheme = request.AccountName.Trim(),
+                    AccountScheme = request.AccountScheme.Trim(),
                     Owner = request.Owner.Trim(),
                     Name = request.Name.Trim(),
                     CreatedAt = DateTimeOffset.UtcNow,

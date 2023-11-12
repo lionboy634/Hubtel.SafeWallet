@@ -45,7 +45,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
             var user = await _identityService.GetUserByEmail(User.FindFirst(ClaimTypes.Name)?.Value);
             var command = new AddWalletCommand(user.UserName, accountScheme, accountNumber, type, user.PhoneNumber);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Errors[0]);
         }
 
         [HttpDelete("{walletId}")]
@@ -53,7 +53,7 @@ namespace Hubtel.SafeWallet.Api.Controllers
         {
             var command = new RemoveWalletCommand() { walletId = walletId};
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? NoContent() : BadRequest(result);
+            return result.IsSuccess ? NoContent() : BadRequest(result.Errors[0]);
         }
     }
 }

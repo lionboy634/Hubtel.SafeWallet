@@ -12,7 +12,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string AccountName { get; set; }
+        public string AccountScheme { get; set; }
         public string AccountNumber { get; set; }
         public string Type { get; set; }
         public string Owner { get; set; }
@@ -20,7 +20,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
         public AddWalletCommand(string name, string accountName, string accountNumber, string type, string owner)
         {
             Name = name;
-            AccountName = accountName;
+            AccountScheme = accountName;
             AccountNumber = accountNumber;
             Type = type;
             Owner = owner;
