@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Hubtel.SafeWallet.Core.Data;
 using Hubtel.SafeWallet.Core.Domain.Model;
+using Hubtel.SafeWallet.Core.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -19,6 +21,7 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
         Task RemoveWallet(int walletId);
         Task<bool> CheckExistingUserWallet(string accountNumber, string phonenumber);
         Task<int> GetUserWalletCount(string phoneNumber);
+        Task<bool> CheckDuplicateAccount(string owner, string account_number);
     }
     public class WalletRepository : DbRepository, IWalletRepository
     {
@@ -34,6 +37,16 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<bool> CheckDuplicateAccount(string owner, string accountNumber)
+        {
+            var hashedAccountNumberToCheck = DataHash.HashValue(accountNumber);
+
+            var accounts = await _dbContext.Wallet
+                .Where(c => c.Owner == owner && c.HashedAccountNumber == hashedAccountNumberToCheck)
+                .ToListAsync();
+
+            return accounts.Any();
+        }
         public async Task<Wallet> GetWalletByWalletId(int walletId)
         {
             using (var connection = await GetConnection())

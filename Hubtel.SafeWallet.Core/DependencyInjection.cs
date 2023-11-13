@@ -27,7 +27,6 @@ namespace Hubtel.SafeWallet.Core
             services.AddScoped<IAuthenticator, Authenticator>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-            services.AddScoped<IDataHasher, DataHasher>();
 
             return services;
         }

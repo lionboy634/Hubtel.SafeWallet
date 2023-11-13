@@ -7,26 +7,17 @@ using System.Threading.Tasks;
 using BCrypt.Net;
 namespace Hubtel.SafeWallet.Core.Services
 {
-    public interface IDataHasher
+    
+    public static class DataHash
     {
-        string HashAccountNumber(string accountNumber);
-        bool VerifyHashedAccountNumber(string accountNumber, string hashedAccountNumber);
-    }
-    public class DataHasher : IDataHasher
-    {
-        public string HashAccountNumber(string accountNumber)
+        public static string HashValue(string value)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(accountNumber));
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value));
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
 
-        public bool VerifyHashedAccountNumber(string accountNumber, string hashedAccountNumber)
-        {
-            string newlyHashed = HashAccountNumber(accountNumber);
-            return string.Equals(newlyHashed, hashedAccountNumber, StringComparison.OrdinalIgnoreCase);
-        }
     }
 }
