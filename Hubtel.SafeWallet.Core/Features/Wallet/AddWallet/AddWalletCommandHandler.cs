@@ -17,39 +17,35 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.AddWallet
     {
         private readonly IWalletRepository _walletRepository;
         private readonly ILogger<AddWalletCommandHandler> _logger;
-        private readonly IValidator<AddWalletCommand> _validator;
-        private IDataHasher _dataHasher;
         public AddWalletCommandHandler(
             IWalletRepository walletRepository,
-            ILogger<AddWalletCommandHandler> logger,
-            IValidator<AddWalletCommand> validator,
-            IDataHasher dataHasher)
+            ILogger<AddWalletCommandHandler> logger)
         {
             _walletRepository = walletRepository;
             _logger = logger;
-            _validator = validator;
-            _dataHasher = dataHasher;
         }
         public async Task<Result> Handle(AddWalletCommand request, CancellationToken cancellationToken)
         {
-            var existingWallet = await _walletRepository.CheckExistingUserWallet(request.AccountNumber, request.Owner);
-            if (existingWallet)
+            var accountNumber = request.AccountNumber.Trim();
+            var accountExist = await _walletRepository.CheckDuplicateAccount(request.Owner, request.AccountNumber);
+            if (accountExist)
             {
                 return await Task.FromResult(Result.Fail("Wallet With AccountNumber Exists"));
             }
+           
             var walletCount = await _walletRepository.GetUserWalletCount(request.Owner);
-            if (walletCount == 5)
+            if (walletCount >= 5)
             {
                 return await Task.FromResult(Result.Fail("User Cannot Have More Than 5 Wallets").WithError("User Cannot Have More Than 5 Wallets"));
             }
             else
             {
                 
-                var accountNumber =  request.Type.ToLower() == "momo" ? request.AccountNumber.Trim() : request.AccountNumber.Trim().Substring(0,6);
-                var hashedAccountNumber = request.Type.ToLower() == "momo" ? accountNumber : _dataHasher.HashAccountNumber(accountNumber);
+                var storedAccountNumber =  request.Type.ToLower() == "momo" ? accountNumber : accountNumber.Substring(0,6);
+                var hashedAccountNumber = DataHash.HashValue(accountNumber);
                 await _walletRepository.AddWallet(new Domain.Model.Wallet()
                 {
-                    AccountNumber = accountNumber,
+                    AccountNumber = storedAccountNumber,
                     AccountScheme = request.AccountScheme.Trim(),
                     Owner = request.Owner.Trim(),
                     Name = request.Name.Trim(),
