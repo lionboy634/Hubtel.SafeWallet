@@ -22,14 +22,14 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
         }
         public async Task<Result> Handle(RemoveWalletCommand request, CancellationToken cancellationToken)
         {
-            var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
-            if(wallet == null)
+            var userWallet = await _walletRepository.VerifyUserWallet(request.WalletId, request.Owner);
+            if(userWallet == null)
             {
-                string message = $"Failed To Find Wallet [{request.walletId}]";
+                string message = $"Failed To Find Wallet [{request.WalletId}]";
                 _logger.LogError(message);
                 return Result.Fail(message).WithError(new Error(message));
             }
-            await _walletRepository.RemoveWallet(request.walletId);
+            await _walletRepository.RemoveWallet(request.WalletId, request.Owner);
 
             return Result.Ok().WithSuccess("Wallet Removed Successfully");
         }

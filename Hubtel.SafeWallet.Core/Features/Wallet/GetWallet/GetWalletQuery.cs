@@ -11,6 +11,11 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.GetWallet
 {
     public class GetWalletQuery : IRequest<Result<Domain.Model.Wallet>>
     {
-        public int walletId { get; set; }
+        public int WalletId { get; private set; }
+
+        public GetWalletQuery(int walletId)
+        {
+            WalletId = walletId;
+        }
     }
 }

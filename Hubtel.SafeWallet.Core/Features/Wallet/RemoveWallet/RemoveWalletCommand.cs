@@ -10,6 +10,14 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
 {
     public class RemoveWalletCommand : IRequest<Result>
     {
-       public int walletId { get; set; }
+        public int WalletId { get; private set; }
+        public string? Owner { get; private set; }
+
+        public RemoveWalletCommand(int walletId, string? owner)
+        {
+            WalletId = walletId;
+            Owner = owner;
+        }
+
     }
 }

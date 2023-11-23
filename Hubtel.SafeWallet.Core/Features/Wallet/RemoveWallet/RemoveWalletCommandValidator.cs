@@ -11,7 +11,8 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet
     {
         public RemoveWalletCommandValidator()
         {
-            RuleFor(command=> command.walletId).NotEmpty();
+            RuleFor(command=> command.WalletId).NotEmpty();
+            RuleFor(command=> command.Owner).NotEmpty();
         }
     }
 }
