@@ -1,5 +1,6 @@
 ﻿using Hubtel.SafeWallet.Core.Domain.Model;
 using Hubtel.SafeWallet.Core.Features.Wallet.AddWallet;
+using Hubtel.SafeWallet.Core.Features.Wallet.GetUserWallet;
 using Hubtel.SafeWallet.Core.Features.Wallet.GetWallet;
 using Hubtel.SafeWallet.Core.Features.Wallet.ListWallet;
 using Hubtel.SafeWallet.Core.Features.Wallet.RemoveWallet;
@@ -34,7 +35,8 @@ namespace Hubtel.SafeWallet.Api.Controllers
         [HttpGet("{walletId}")]
         public async Task<IActionResult> GetWallet([FromRoute] int walletId)
         {
-            var command = new GetWalletQuery() { walletId = walletId };
+            var command = new GetWalletQuery(walletId);
+
             var result = await _mediator.Send(command);
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors[0]);
         }
@@ -43,17 +45,30 @@ namespace Hubtel.SafeWallet.Api.Controllers
         public async Task<IActionResult> AddWallet([FromForm] string accountNumber, [FromForm] string accountScheme, [FromForm] string type)
         {
             var user = await _identityService.GetUserByEmail(User.FindFirst(ClaimTypes.Name)?.Value);
+           
             var command = new AddWalletCommand(user.UserName, accountScheme, accountNumber, type, user.PhoneNumber);
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok() : BadRequest(result.Errors[0]);
+            return result.IsSuccess ? Ok(result.Successes[0]) : BadRequest(result.Errors[0]);
         }
 
         [HttpDelete("{walletId}")]
         public async Task<IActionResult> RemoveWallet([FromRoute] int walletId)
         {
-            var command = new RemoveWalletCommand() { walletId = walletId};
+            var owner = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
+
+            var command = new RemoveWalletCommand(walletId, owner);
             var result = await _mediator.Send(command);
             return result.IsSuccess ? NoContent() : BadRequest(result.Errors[0]);
+        }
+
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUserWallets()
+        {
+            var owner = User.FindFirst(ClaimTypes.MobilePhone)?.Value;
+
+            var command = new GetUserWalletQuery(owner);
+            var result = await _mediator.Send(command);
+            return Ok(result.Value);
         }
     }
 }

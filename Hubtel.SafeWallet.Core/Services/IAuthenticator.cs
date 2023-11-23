@@ -62,7 +62,8 @@ namespace Hubtel.SafeWallet.Core.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.Email)
+                new Claim(ClaimTypes.Name, _user.Email),
+                new Claim(ClaimTypes.MobilePhone, _user.PhoneNumber)
             };
             var roles = await _userManager.GetRolesAsync(_user);
             if (roles.Any())

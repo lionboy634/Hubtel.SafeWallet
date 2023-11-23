@@ -19,7 +19,7 @@ namespace Hubtel.SafeWallet.Core.Features.Wallet.GetWallet
         }
         public async  Task<Result<Domain.Model.Wallet>> Handle(GetWalletQuery request, CancellationToken cancellationToken)
         {
-            var wallet = await _walletRepository.GetWalletByWalletId(request.walletId);
+            var wallet = await _walletRepository.GetWalletByWalletId(request.WalletId);
             if(wallet == null)
             {
 

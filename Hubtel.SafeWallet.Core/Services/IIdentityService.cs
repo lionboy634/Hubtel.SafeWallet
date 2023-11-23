@@ -13,7 +13,7 @@ namespace Hubtel.SafeWallet.Core.Services
     {
         Task<IdentityResult> CreateUserAsync(WalletOwner user, string password);
         Task AddUserRole(WalletOwner user, string Role);
-        Task<WalletOwner> GetUserByEmail(string email);
+        Task<WalletOwner> GetUserByEmail(string? email);
         Task<bool> CheckUserByPhone(string phone);
         Task<bool> CheckUserByEmailOrPhone(string email, string phone);
     }
@@ -49,7 +49,7 @@ namespace Hubtel.SafeWallet.Core.Services
             return result;
         }
 
-        public async Task<WalletOwner> GetUserByEmail(string email)
+        public async Task<WalletOwner> GetUserByEmail(string? email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             return user;

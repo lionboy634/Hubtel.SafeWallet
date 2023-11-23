@@ -18,10 +18,12 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
         Task AddWallet(Wallet wallet);
         Task<Wallet> GetWalletByWalletId(int walletId);
         Task<IEnumerable<Wallet>> ListWallets();
-        Task RemoveWallet(int walletId);
+        Task RemoveWallet(int walletId, string owner);
         Task<bool> CheckExistingUserWallet(string accountNumber, string phonenumber);
         Task<int> GetUserWalletCount(string phoneNumber);
         Task<bool> CheckDuplicateAccount(string owner, string account_number);
+        Task<IEnumerable<Wallet>> GetUserWallets(string owner);
+        Task<Wallet?> VerifyUserWallet(int walletId, string owner);
     }
     public class WalletRepository : DbRepository, IWalletRepository
     {
@@ -74,17 +76,18 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
             }
         }
 
-        public async Task RemoveWallet(int walletId)
+        public async Task RemoveWallet(int walletId, string owner)
         {
             using (var connection = await GetConnection())
             {
                 var query = @"
                     DELETE FROM public.wallet
-                    WHERE id = @WalletId
+                    WHERE id = @WalletId AND owner = @Owner
                 ";
                 await connection.ExecuteScalarAsync(query, new
                 {
-                    WalletId = walletId
+                    WalletId = walletId,
+                    Owner = owner
                 });
 
             }
@@ -124,6 +127,16 @@ namespace Hubtel.SafeWallet.Core.Domain.Repository
                 });
 
             }
+        }
+
+        public async Task<IEnumerable<Wallet>> GetUserWallets(string owner)
+        {
+            return await _dbContext.Wallet.Where(c => c.Owner == owner).ToListAsync();
+        }
+
+        public async Task<Wallet?> VerifyUserWallet(int walletId, string owner)
+        {
+            return await _dbContext.Wallet.Where(c => c.Id == walletId && c.Owner == owner).FirstOrDefaultAsync();
         }
     }
 }
